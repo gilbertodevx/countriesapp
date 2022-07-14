@@ -3,15 +3,21 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectedCountriesActions } from '../store/redux-store';
 import CountryDetails from './CountryDetails';
 
-const CountryItem = ({ data, onModalEvents }: any) => {
+const CountryItem = ({ data }: any) => {
   const [countryClicked, setCountryClicked] = useState('');
   const [showModal, setShowModal] = useState(false);
 
-  const selectedCountries = useSelector(
-    (state: any) => state.selectedCountries
-    //   state.selectedCountries?.find(
-    // 	(el: any) => el.name.common === item.name.common
-    //   )
+  // const selectedCountries = useSelector(
+  //   (state: any) => state.selectedCountries
+  //   //   state.selectedCountries?.find(
+  //   // 	(el: any) => el.name.common === item.name.common
+  //   //   )
+  // );
+
+  const isFavorite = useSelector((state: any) =>
+    state.selectedCountries?.some(
+      (el: any) => el.name.common === data.country.name.common
+    )
   );
 
   const dispatch = useDispatch();
@@ -20,8 +26,8 @@ const CountryItem = ({ data, onModalEvents }: any) => {
   //   event.preventDefault();
   // };
 
-  const existsCountryInFavorite = (countryName: string) =>
-    selectedCountries?.some((item: any) => item.name.common === countryName);
+  // const existsCountryInFavorite = (countryName: string) =>
+  //   selectedCountries?.some((item: any) => item.name.common === countryName);
 
   const showModalDetailsHandler = (country: string) => {
     setShowModal(true);
@@ -35,7 +41,6 @@ const CountryItem = ({ data, onModalEvents }: any) => {
 
   return (
     <div key={data.key}>
-      {console.log('RE RENDER')}
       {/* {countryClicked === '' && !showModal && ( */}
       <span>{data.country.name.common}</span>
       <button
@@ -44,7 +49,7 @@ const CountryItem = ({ data, onModalEvents }: any) => {
       >
         See Details
       </button>
-      {!existsCountryInFavorite(data.country.name.common) && (
+      {!isFavorite && (
         <button
           onClick={
             () => {
@@ -85,7 +90,7 @@ const CountryItem = ({ data, onModalEvents }: any) => {
           Add Fav
         </button>
       )}
-      {existsCountryInFavorite(data.country.name.common) && <span>FAV</span>}
+      {isFavorite && <span>FAV</span>}
       {/* )} */}
       {countryClicked && showModal && (
         <CountryDetails
@@ -96,4 +101,5 @@ const CountryItem = ({ data, onModalEvents }: any) => {
     </div>
   );
 };
+// export default React.memo(CountryItem);
 export default CountryItem;
