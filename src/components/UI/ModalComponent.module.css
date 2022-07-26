@@ -9,6 +9,8 @@
 }
 
 .modal {
+  display: flex;
+
   position: fixed;
   top: 20vh;
   left: 5%;

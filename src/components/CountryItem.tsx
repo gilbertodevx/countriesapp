@@ -1,105 +1,94 @@
+import { Card, CardActions, CardContent, IconButton } from '@mui/material';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectedCountriesActions } from '../store/redux-store';
+import { ICountryItem } from './Countries';
 import CountryDetails from './CountryDetails';
 
-const CountryItem = ({ data }: any) => {
+const CountryItem: React.FC<ICountryItem> = ({ country: data }) => {
   const [countryClicked, setCountryClicked] = useState('');
   const [showModal, setShowModal] = useState(false);
 
-  // const selectedCountries = useSelector(
-  //   (state: any) => state.selectedCountries
-  //   //   state.selectedCountries?.find(
-  //   // 	(el: any) => el.name.common === item.name.common
-  //   //   )
-  // );
-
   const isFavorite = useSelector((state: any) =>
     state.selectedCountries?.some(
-      (el: any) => el.name.common === data.country.name.common
+      (el: any) => el.name.common === data.name.common
     )
   );
 
   const dispatch = useDispatch();
 
-  // const clickHandler = (event: any) => {
-  //   event.preventDefault();
-  // };
-
-  // const existsCountryInFavorite = (countryName: string) =>
-  //   selectedCountries?.some((item: any) => item.name.common === countryName);
-
-  const showModalDetailsHandler = (country: string) => {
+  const showModalDetailsHandler = (country: string): void => {
     setShowModal(true);
     setCountryClicked(country);
   };
 
-  const hideModalDetailsHandler = () => {
+  const hideModalDetailsHandler = (): void => {
     setShowModal(false);
     setCountryClicked('');
   };
 
   return (
-    <div key={data.key}>
-      {/* {countryClicked === '' && !showModal && ( */}
-      <span>{data.country.name.common}</span>
-      <button
-        style={{ cursor: 'pointer' }}
-        onClick={() => showModalDetailsHandler(data.country.name.common)}
+    <>
+      <Card
+        variant='outlined'
+        sx={{ minWidth: 275 }}
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          textAlign: 'center',
+          justifyContent: 'space-between',
+        }}
       >
-        See Details
-      </button>
-      {!isFavorite && (
-        <button
-          onClick={
-            () => {
-              dispatch(
-                selectedCountriesActions.addCountriesChecked({
-                  country: data.country,
-                  isChecked: true,
-                })
-              );
-            }
-
-            // (event: any) => {
-            // event.preventDefault();
-            // console.log(`ADD TO FAV: ${data.country.name.common}`);
-            // // console.log(
-            // //   `Exists in favorites? ${existsCountryInFavorite}`
-            // // );
-            // // if (!existsCountryInFavorite) {
-            // //INFO
-            // // dispatch({
-            // //   type: 'ADD_COUNTRIES_CHECKED',
-            // //   payload: {
-            // //     country,
-            // //     isChecked: true,
-            // //   },
-            // // });
-            // dispatch(
-            //   selectedCountriesActions.addCountriesChecked({
-            //     country: data.country,
-            //     isChecked: true,
-            //   })
-            // );
-
-            // }
-            // }
-          }
+        <CardContent
+          style={{
+            width: '100%',
+            backgroundColor: '#F5F5F5',
+            cursor: 'pointer',
+          }}
+          onClick={() => showModalDetailsHandler(data.name.common)}
         >
-          Add Fav
-        </button>
-      )}
-      {isFavorite && <span>FAV</span>}
-      {/* )} */}
+          <span>{data.name.common ?? 'a'}</span>
+        </CardContent>
+        <CardActions disableSpacing>
+          {!isFavorite && (
+            <IconButton
+              aria-label='add to favorites'
+              onClick={() => {
+                dispatch(
+                  selectedCountriesActions.addCountriesChecked({
+                    country: data,
+                    isChecked: true,
+                  })
+                );
+              }}
+            >
+              <FavoriteBorderIcon style={{ cursor: 'pointer' }} />
+            </IconButton>
+          )}
+          {isFavorite && (
+            <IconButton
+              aria-label='remove from favorites'
+              onClick={() => {
+                dispatch(
+                  selectedCountriesActions.removeCountriesChecked({
+                    country: data,
+                    isChecked: false,
+                  })
+                );
+              }}
+            >
+              <FavoriteIcon style={{ cursor: 'pointer', fill: 'red' }} />
+            </IconButton>
+          )}
+        </CardActions>
+      </Card>
       {countryClicked && showModal && (
-        <CountryDetails
-          name={countryClicked}
-          onClose={hideModalDetailsHandler}
-        />
+        <CountryDetails country={data} onClose={hideModalDetailsHandler} />
       )}
-    </div>
+    </>
   );
 };
-// export default React.memo(CountryItem);
 export default CountryItem;

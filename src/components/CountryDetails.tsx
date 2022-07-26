@@ -1,15 +1,20 @@
-import Modal from './UI/Modal';
+import ModalComponent from './UI/ModalComponent';
 import styles from './CountryDetails.module.css';
+import { ICountryItem } from './Countries';
+import CloseIcon from '@mui/icons-material/Close';
+import { Typography } from '@mui/material';
 
-const CountryDetails = ({ name, onClose }: any) => {
+const CountryDetails: React.FC<ICountryItem> = ({ country: data, onClose }) => {
   return (
-    <Modal onHide={onClose}>
-      {' '}
-      <button className={styles['button--alt']} onClick={onClose}>
-        Close
-      </button>
-      Details of {name}
-    </Modal>
+    <ModalComponent onHide={onClose}>
+      <div className={styles['button--alt']} onClick={onClose}>
+        <CloseIcon />
+      </div>
+      <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <Typography variant='h5'>Details of {data.name.common}</Typography>
+        <img src={data.flags.png} alt='' />
+      </div>
+    </ModalComponent>
   );
 };
 

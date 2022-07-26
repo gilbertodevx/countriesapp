@@ -1,15 +1,22 @@
 import { useEffect } from 'react';
+// import ICountryItem from '../models/ICountryItem';
+import ICountryObj from '../models/ICountryObj';
+
 import useHttp from './use-http';
 
-const useRestCountries = (data: any, setData: any) => {
+const useRestCountries = (
+  data: ICountryObj[],
+  setData: (data: ICountryObj[]) => void
+) => {
   const { isLoading, error, sendRequest: fetchRestCountries } = useHttp();
 
   useEffect(() => {
-    fetchRestCountries({ method: 'GET' }, (dataObj: any) => {
-      const loadRestCountries = [];
+    fetchRestCountries({ method: 'GET' }, (dataObj: ICountryObj[]) => {
+      const loadRestCountries: ICountryObj[] = [];
 
       for (const rC in dataObj) {
-        loadRestCountries.push(dataObj[rC]);
+        const obj: ICountryObj = dataObj[rC];
+        loadRestCountries.push(obj);
       }
 
       setData(loadRestCountries);
